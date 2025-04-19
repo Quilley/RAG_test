@@ -42,3 +42,10 @@ loaded_documents = website_docs.load()
 
 # Split the loaded documents
 splited_documents = text_splitter.split_documents(loaded_documents)
+
+# Index the split documents into Pinecone
+for doc in splited_documents:
+    pc.index(index_name).upsert({
+        "id": doc.metadata.get("id", str(hash(doc.page_content))),
+        "values": doc.page_content
+    })
